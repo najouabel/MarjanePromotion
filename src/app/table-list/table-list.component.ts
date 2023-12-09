@@ -1,55 +1,67 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { PromotionProductService } from "../service/promotion-product/promotion-product.service";
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { PromotionProduct } from '../models/promotion-product';
+import { PromotionProduct } from "../models/promotion-product";
+import { share } from "rxjs";
 
 @Component({
-    selector: 'app-table-list',
-    templateUrl: './table-list.component.html',
-    styleUrls: ['./table-list.component.css']
+  selector: "app-table-list",
+  templateUrl: "./table-list.component.html",
+  styleUrls: ["./table-list.component.css"],
 })
 export class TableListComponent implements OnInit {
+  promotionProducts: PromotionProduct[];
+  pages: number[];
+  currentPage: number = 0;
 
-    promotionProducts$: Observable<PromotionProduct[]>;
+  constructor(private productService: PromotionProductService) {}
 
-    constructor(private productService: PromotionProductService) { }
+  ngOnInit(): void {
+    this.loadPromotionProducts(this.currentPage);
+  }
 
-    acceptProduct(product: PromotionProduct): void {
-        this.productService.acceptProductPromotion(product.uuid)
-            .pipe(
-                switchMap(() => this.productService.getPromotionProducts())
-            )
-            .subscribe((updatedProducts: PromotionProduct[]) => {
-                this.promotionProducts$ = this.updateObservable(updatedProducts);
-            });
-    }
+  acceptProduct(product: PromotionProduct): void {
+    console.log("want to update product");
+    this.productService.acceptProductPromotion(product.uuid).subscribe({
+      next: () => {
+        this.loadPromotionProducts(this.currentPage);
+      },
+      error: (error) => {
+        console.error("Error accepting product:", error.message);
+      },
+    });
+  }
 
-    denyProduct(product: PromotionProduct): void {
-        this.productService.denyProductPromotion(product.uuid)
-            .pipe(
-                switchMap(() => this.productService.getPromotionProducts())
-            )
-            .subscribe((updatedProducts: PromotionProduct[]) => {
-                this.promotionProducts$ = this.updateObservable(updatedProducts);
-            });
-    }
+  denyProduct(product: PromotionProduct): void {
+    console.log("want to update product");
+    this.productService.denyProductPromotion(product.uuid).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.loadPromotionProducts(this.currentPage);
+      },
+      error: (error) => {
+        console.error("Error denying product:", error);
+      },
+    });
+  }
 
-    ngOnInit(): void {
-        this.loadPromotionProducts();
-    }
+  // fetching method, fetching paginated data
+  loadPromotionProducts(currentPage): void {
+    this.productService.getPromotionProducts(currentPage).subscribe({
+      next: (data) => {
+        this.promotionProducts = data.content;
+        this.pages = new Array(data.totalPages);
+        currentPage = data.pageable.pageNumber;
+      },
+      error: (error) => {
+        console.error("Error loading promotion products:", error);
+      },
+    });
+  }
 
-    loadPromotionProducts(): void {
-        this.promotionProducts$ = this.productService.getPromotionProducts()
-            .pipe(
-                map((data: any[]) => data as PromotionProduct[])
-            );
-    }
-
-    private updateObservable(products: PromotionProduct[]): Observable<PromotionProduct[]> {
-        return new Observable<PromotionProduct[]>((observer) => {
-            observer.next(products);
-            observer.complete();
-        });
-    }
+  setCurrentPage(choosenPage: number): void {
+    console.log("choosen page" + choosenPage);
+    this.currentPage = choosenPage;
+    this.loadPromotionProducts(this.currentPage);
+  }
+  // fetching pages method, triggered when clicking on a navigation button
 }

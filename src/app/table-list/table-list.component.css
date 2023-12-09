@@ -1,0 +1,12 @@
+.status {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    align-self: center;
+}
+.status-row {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    color: white;
+}

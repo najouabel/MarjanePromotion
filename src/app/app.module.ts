@@ -9,8 +9,9 @@ import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
-import {PromotionProductService} from "./service/promotion-product/promotion-product.service";
-import {ProductService} from "./service/product/product.service";
+import { PromotionProductService } from "./service/promotion-product/promotion-product.service";
+import { ProductService } from "./service/product/product.service";
+
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -26,12 +27,8 @@ import {ProductService} from "./service/product/product.service";
   declarations: [
     AppComponent,
     AdminLayoutComponent,
-
   ],
   providers: [PromotionProductService,ProductService],
-
-
-
   bootstrap: [AppComponent]
 })
 export class AppModule { }

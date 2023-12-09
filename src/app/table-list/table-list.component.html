@@ -1,46 +1,73 @@
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-danger">
-                        <h4 class="card-title">Simple Table</h4>
-                        <p class="card-category">Here is a subtitle for this table</p>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="text-primary">
-                                <th>ID</th>
-                                <th>Percentage</th>
-                                <th>status</th>
-                                <th>Action</th>
-
-                                </thead>
-                                <tbody>
-
-                                <tr *ngFor="let product of (promotionProducts$ | async)">
-                                    <td>{{ product.uuid }}</td>
-                                    <td>{{ product.percentage }}%</td>
-                                    <td>
-                                        {{product.status}}
-                                    </td>
-                                    <td>
-                                        <button *ngIf="product.status !== 'denied'" class="btn btn-success" (click)="acceptProduct(product)">Accepter</button>
-                                        <button *ngIf="product.status !== 'approved'" class="btn btn-danger" (click)="denyProduct(product)">Refuser</button>
-                                    </td>
-                                </tr>
-
-
-
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Promotions</h4>
+            <p class="card-category">here are pending promotions</p>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary">
+                  <th>Percentage</th>
+                  <th>status</th>
+                  <th>name</th>
+                  <th>brand</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let promotion of promotionProducts">
+                    <td>{{ promotion.percentage }}%</td>
+                    <td class="status-row">
+                        <p class="status" [ngClass]="{'bg-success': promotion.status === 'approved', 'bg-danger': promotion.status === 'denied', 'bg-info': promotion.status === 'pending'}">{{ promotion.status }}</p>
+                    </td>
+                    <td>
+                      {{ promotion.product.name }}
+                    </td>
+                    <td>
+                      {{ promotion.product.brand }}
+                    </td>
+                    <td>
+                      <div *ngIf="promotion.status == 'pending'">
+                        <button
+                          class="btn btn-danger"
+                          (click)="denyProduct(promotion)"
+                        >
+                          Refuser
+                        </button>
+                        <button
+                          class="btn btn-success"
+                          (click)="acceptProduct(promotion)"
+                        >
+                          Accepter
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          *ngIf="promotion.status != 'pending'"
+                          class="btn btn-black disabled"
+                        >
+                          No Action Available
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+    <div class="d-flex align-items-center justify-content-center">
+        <button class="btn btn-info p-2 rounded-0">&lt;</button>
+        <div *ngFor="let page of pages let i = index" class="d-flex align-items-center justify-content-center">
+          <button (click)="setCurrentPage(i)" class="btn btn-info p-2 rounded-0">{{ i + 1 }}</button>
+        </div>
+        <button class="btn btn-info p-2 rounded-0">&gt;</button>
+      </div>            
+      navigation component
+  </div>
 </div>
