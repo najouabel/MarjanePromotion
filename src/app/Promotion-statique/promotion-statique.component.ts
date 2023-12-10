@@ -16,14 +16,14 @@ export class PromotionStatiqueComponent implements OnInit {
     constructor(private productService: PromotionProductService) { }
 
     ngOnInit(): void {
-        this.loadPromotionProducts();
+        // this.loadPromotionProducts();
     }
 
     loadPromotionProducts(): void {
-        this.promotionProducts$ = this.productService.getPromotionProducts();
-        this.promotionProducts$.subscribe((products) => {
-            this.calculateStats(products);
-        });
+        // this.promotionProducts$ = this.productService.getPromotionProducts();
+        // this.promotionProducts$.subscribe((products) => {
+        //     this.calculateStats(products);
+        // });
     }
 
     calculateStats(products: any[]): void {

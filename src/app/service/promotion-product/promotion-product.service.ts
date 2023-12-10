@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { PromotionProduct } from 'app/models/promotion-product';
+import { PaginatedResponse } from 'app/models/PaginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +24,10 @@ export class PromotionProductService {
     return this.http.post<any>(this.apiUrl, body);
   }
 
-  getPromotionProducts(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getPromotionProducts(page: number): Observable<PaginatedResponse<PromotionProduct>> {
+    return this.http.get<any>(this.apiUrl + "?page=" + page);
   }
+  // fetching method, return pagination object
 
   acceptProductPromotion(productId: string): Observable<any> {
     const acceptUrl = `${this.apiUrl}/${productId}/accept`;
@@ -35,6 +38,4 @@ export class PromotionProductService {
     const denyUrl = `${this.apiUrl}/${productId}/deny`;
     return this.http.put<any>(denyUrl, {});
   }
-
-
 }
